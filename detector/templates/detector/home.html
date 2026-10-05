@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html>
 <head>
     <title>ScamShield</title>
@@ -6,21 +7,35 @@
 
 <body>
 
-    <h1>Welcome to ScamShield</h1>
+```
+<h1>🛡️ ScamShield</h1>
 
-    <p>Protect yourself from online scams.</p>
-    <h2>Check a suspicious message</h2>
+<p>Protect yourself from online scams.</p>
+
+<hr>
+
+<h2>Check for a Scam</h2>
+
+<p>
+    Paste a suspicious message, email, or job offer below.
+    ScamShield will analyze it for possible warning signs.
+</p>
 
 <form method="POST">
     {% csrf_token %}
 
-    <textarea name="message" rows="8" cols="50"
-              placeholder="Paste your suspicious message here..."></textarea>
+    <textarea
+        name="message"
+        rows="10"
+        cols="70"
+        placeholder="Paste your suspicious content here..."
+        required></textarea>
 
     <br><br>
 
-    <button type="submit">Analyze</button>
+    <button type="submit">🔍 Analyze</button>
 </form>
+```
 
 </body>
 </html>
