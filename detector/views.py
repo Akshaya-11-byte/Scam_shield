@@ -1,4 +1,11 @@
 from django.shortcuts import render
 
 def home(request):
-    return render(request, 'detector/home.html')
+    message = ""
+
+    if request.method == "POST":
+        message = request.POST.get("message", "")
+
+    return render(request, "detector/home.html", {
+        "message": message
+    })
