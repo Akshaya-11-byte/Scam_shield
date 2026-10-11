@@ -1,41 +1,85 @@
-<!DOCTYPE html>
 
-<html>
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
 <head>
-    <title>ScamShield</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScamShield | Online Scam Checker</title>
+    <link rel="stylesheet" href="{% static 'detector/style.css' %}">
 </head>
 
 <body>
 
-```
-<h1>🛡️ ScamShield</h1>
+    <header class="site-header">
+        <h1>🛡️ ScamShield</h1>
+        <p class="tagline">Think before you trust.</p>
+        <p class="intro">
+            Protect yourself from suspicious messages, emails, and job offers.
+        </p>
+    </header>
 
-<p>Protect yourself from online scams.</p>
+    <main>
+        <section class="analyzer-card">
+            <h2>Check for a Scam</h2>
 
-<hr>
+            <p>
+                Paste a suspicious message, email, or job offer below.
+                ScamShield will check it for possible warning signs.
+            </p>
 
-<h2>Check for a Scam</h2>
+            <form method="POST">
+                {% csrf_token %}
 
-<p>
-    Paste a suspicious message, email, or job offer below.
-    ScamShield will analyze it for possible warning signs.
-</p>
+                <label for="message">Your suspicious message</label>
 
-<form method="POST">
-    {% csrf_token %}
+                <textarea
+                    id="message"
+                    name="message"
+                    rows="8"
+                    placeholder="Paste your suspicious content here..."
+                    required>{{ message }}</textarea>
 
-    <textarea
-        name="message"
-        rows="10"
-        cols="70"
-        placeholder="Paste your suspicious content here..."
-        required></textarea>
+                <div class="form-actions">
+    <button type="submit">🔍 Analyze Message</button>
+    <button type="reset" class="clear-button">Clear Message</button>
+</div>
+            </form>
+        </section>
 
-    <br><br>
+        {% if message %}
+        <section class="results-card">
+            <h2>Analysis Results</h2>
 
-    <button type="submit">🔍 Analyze</button>
-</form>
-```
+            <h3 class="risk-level risk-{{ risk_level|lower }}">
+                Risk Level: {{ risk_level }}
+            </h3>
+
+            <h3>Message Analyzed</h3>
+            <p class="submitted-message">{{ message }}</p>
+
+            {% if warnings %}
+                <h3>Potential Warning Signs</h3>
+                <ul class="warning-list">
+                    {% for item in warnings %}
+                        <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="no-warnings">
+                    No warning signs were detected by the current basic rules.
+                    This does not guarantee that the message is safe.
+                </p>
+            {% endif %}
+        </section>
+        {% endif %}
+    </main>
+
+    <footer class="site-footer">
+        <p>ScamShield — Stay alert. Stay safe.</p>
+        <p>Basic warning-sign detection cannot guarantee that a message is genuine.</p>
+    </footer>
 
 </body>
 </html>
