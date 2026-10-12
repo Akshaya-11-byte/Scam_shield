@@ -72,6 +72,15 @@
                     This does not guarantee that the message is safe.
                 </p>
             {% endif %}
+            
+<h3>Recommended Safety Actions</h3>
+
+<ul class="recommendation-list">
+    {% for item in recommendations %}
+        <li>{{ item }}</li>
+    {% endfor %}
+</ul>
+
         </section>
         {% endif %}
     </main>
