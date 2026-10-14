@@ -6,6 +6,7 @@ def home(request):
     warnings = []
     recommendations = []
     risk_level = "Low"
+    risk_score = 0
 
     if request.method == "POST":
         message = request.POST.get("message", "").strip()
@@ -135,15 +136,18 @@ def home(request):
                 "Use official app stores or the developer's verified website."
             )
 
-        # 10. Determine illustrative risk level
-        if len(warnings) == 0:
+        # 10. Calculate an illustrative risk score
+        risk_score = min(len(warnings) * 25, 100)
+
+        # 11. Determine risk level
+        if risk_score == 0:
             risk_level = "Low"
-        elif len(warnings) == 1:
+        elif risk_score <= 25:
             risk_level = "Medium"
         else:
             risk_level = "High"
 
-        # 11. Provide general advice when no rules match
+        # 12. General advice when no rules match
         if not warnings:
             recommendations.append(
                 "No warning signs matched the current rules. "
@@ -151,10 +155,10 @@ def home(request):
                 "Verify unexpected requests independently."
             )
 
-        # Remove duplicate recommendations
+        # 13. Remove duplicate recommendations
         recommendations = list(dict.fromkeys(recommendations))
 
-    # 12. Send results to the HTML page
+    # 14. Send results to the HTML page
     return render(
         request,
         "detector/home.html",
@@ -163,5 +167,6 @@ def home(request):
             "warnings": warnings,
             "recommendations": recommendations,
             "risk_level": risk_level,
+            "risk_score": risk_score,
         },
     )
