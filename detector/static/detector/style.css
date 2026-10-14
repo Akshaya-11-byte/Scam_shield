@@ -1,4 +1,3 @@
-
 /* Base page */
 * {
     box-sizing: border-box;
@@ -8,7 +7,7 @@ body {
     margin: 0;
     padding: 30px 20px;
     font-family: Arial, sans-serif;
-    background-color: #eaf0f7;
+    background: linear-gradient(180deg, #eaf0f7, #f8fafc);
     color: #1f2937;
     line-height: 1.6;
 }
@@ -16,35 +15,16 @@ body {
 /* Header */
 .site-header {
     max-width: 900px;
-    margin: 0 auto 30px;
-    text-align: center;
-}
-
-
-.site-header {
-    max-width: 900px;
-    margin: 0 auto 20px;
+    margin: 0 auto 28px;
     text-align: center;
 }
 
 .site-header h1 {
     margin: 0;
     color: #123b67;
-    font-size: 36px;
+    font-size: 38px;
+    letter-spacing: -1px;
 }
-
-.tagline {
-    margin: 4px 0;
-    color: #155eef;
-    font-size: 19px;
-    font-weight: bold;
-}
-
-.intro {
-    color: #526174;
-    margin-top: 14px;
-}
-
 
 .tagline {
     margin: 4px 0;
@@ -54,67 +34,43 @@ body {
 }
 
 .intro {
+    margin-top: 12px;
     color: #526174;
 }
 
-/* Main content */
-
+/* Main layout */
 main {
     max-width: 760px;
     margin: 0 auto;
 }
 
-
 .analyzer-card,
 .results-card {
     margin-bottom: 25px;
     padding: 30px;
-    background-color: #ffffff;
+    background: #ffffff;
     border: 1px solid #d5dfeb;
-    border-radius: 16px;
-    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+    border-radius: 18px;
+    box-shadow: 0 8px 28px rgba(15, 23, 42, 0.08);
 }
 
 .analyzer-card h2,
 .results-card h2 {
     margin-top: 0;
     color: #123b67;
+    font-size: 25px;
 }
 
 .analyzer-card p {
     color: #526174;
 }
 
-/* Analysis results improvements */
-.results-card {
-    border-top: 4px solid #155eef;
-}
-
-.results-card h3 {
-    color: #234b70;
-    margin-top: 22px;
-}
-
-.results-card .risk-level {
-    margin-top: 8px;
-    margin-bottom: 10px;
-}
-
-.warning-list {
-    padding-left: 24px;
-}
-
-.warning-list li {
-    margin-bottom: 12px;
-    line-height: 1.7;
-}
-
-
 /* Message input */
 label {
     display: block;
     margin-bottom: 8px;
     font-weight: bold;
+    color: #234b70;
 }
 
 textarea {
@@ -124,89 +80,236 @@ textarea {
     padding: 14px;
     border: 1px solid #b8c5d6;
     border-radius: 10px;
-    background-color: #f8fafc;
+    background: #f8fafc;
     color: #1f2937;
     font: inherit;
     resize: vertical;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 textarea:focus {
-    outline: 2px solid #155eef;
+    outline: none;
     border-color: #155eef;
+    box-shadow: 0 0 0 3px rgba(21, 94, 239, 0.13);
 }
 
-/* Analyze button */
+/* Buttons */
+.form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+}
 
 button {
     display: inline-block;
     margin-top: 18px;
-    padding: 14px 26px;
+    padding: 13px 22px;
     border: none;
     border-radius: 9px;
     background: linear-gradient(135deg, #155eef, #124ac0);
     color: #ffffff;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: bold;
     cursor: pointer;
     box-shadow: 0 4px 10px rgba(21, 94, 239, 0.2);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
 button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 7px 15px rgba(21, 94, 239, 0.3);
+    box-shadow: 0 7px 15px rgba(21, 94, 239, 0.25);
 }
 
 button:active {
     transform: translateY(0);
 }
 
-
 button:focus-visible {
     outline: 3px solid #93c5fd;
     outline-offset: 3px;
 }
 
-/* Analysis results */
+.clear-button {
+    background: #e2e8f0;
+    color: #334155;
+    box-shadow: none;
+}
+
+.clear-button:hover {
+    background: #cbd5e1;
+    box-shadow: none;
+}
+
+/* Results card */
+.results-card {
+    border-top: 5px solid #155eef;
+}
+
+.results-card h3 {
+    margin-top: 24px;
+    color: #234b70;
+}
+
+.results-card .risk-level {
+    margin-top: 8px;
+    margin-bottom: 10px;
+}
+
+/* Risk score card */
+.score-card {
+    margin: 20px 0;
+    padding: 24px;
+    text-align: center;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 15px;
+}
+
+.score-card h3 {
+    margin: 0 0 8px;
+    color: #123b67;
+}
+
+.score-number {
+    margin: 8px 0 18px;
+    color: #123b67;
+    font-size: 44px;
+    font-weight: bold;
+    line-height: 1.2;
+}
+
+.score-number span {
+    color: #64748b;
+    font-size: 20px;
+    font-weight: normal;
+}
+
+/* Progress bar */
+.score-track {
+    width: 100%;
+    height: 14px;
+    overflow: hidden;
+    background: #e2e8f0;
+    border-radius: 20px;
+}
+
+.score-fill {
+    height: 100%;
+    border-radius: 20px;
+    transition: width 0.6s ease;
+}
+
+.score-low {
+    background: #16a34a;
+}
+
+.score-medium {
+    background: #eab308;
+}
+
+.score-high {
+    background: #dc2626;
+}
+
+.score-note {
+    margin: 16px 0 0;
+    color: #64748b;
+    font-size: 13px;
+}
+
+/* Risk level badges */
+.risk-level {
+    display: inline-block;
+    padding: 9px 15px;
+    border-radius: 9px;
+    font-size: 16px;
+}
+
+.risk-level.risk-low {
+    color: #166534;
+    background: #dcfce7;
+}
+
+.risk-level.risk-medium {
+    color: #92400e;
+    background: #fef3c7;
+}
+
+.risk-level.risk-high {
+    color: #991b1b;
+    background: #fee2e2;
+}
+
+/* Analyzed message */
 .submitted-message {
     padding: 14px;
-    background-color: #f8fafc;
+    background: #f8fafc;
     border: 1px solid #e2e8f0;
-    border-radius: 8px;
+    border-radius: 10px;
     overflow-wrap: anywhere;
     white-space: pre-wrap;
 }
 
-.risk-level {
-    display: inline-block;
-    padding: 10px 16px;
-    border-radius: 8px;
+/* Warning signs */
+.warning-list,
+.recommendation-list {
+    padding-left: 0;
+    list-style: none;
 }
 
-.risk-low {
-    color: #166534;
-    background-color: #dcfce7;
-}
-
-.risk-medium {
-    color: #92400e;
-    background-color: #fef3c7;
-}
-
-.risk-high {
-    color: #991b1b;
-    background-color: #fee2e2;
+.warning-list li,
+.recommendation-list li {
+    position: relative;
+    margin-bottom: 12px;
+    padding: 13px 15px 13px 42px;
+    border-radius: 10px;
+    line-height: 1.6;
 }
 
 .warning-list li {
-    margin-bottom: 10px;
-    padding-left: 4px;
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+}
+
+.warning-list li::before {
+    content: "!";
+    position: absolute;
+    left: 15px;
+    top: 12px;
+    display: flex;
+    width: 19px;
+    height: 19px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #ea580c;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+/* Safety recommendations */
+.recommendation-list li {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+}
+
+.recommendation-list li::before {
+    content: "✓";
+    position: absolute;
+    left: 14px;
+    top: 12px;
+    color: #166534;
+    font-weight: bold;
+    font-size: 17px;
 }
 
 .no-warnings {
     padding: 14px;
-    background-color: #fef3c7;
-    border-radius: 8px;
+    background: #fef3c7;
+    border: 1px solid #fde68a;
+    border-radius: 10px;
 }
 
 /* Footer */
@@ -221,7 +324,7 @@ button:focus-visible {
 /* Mobile layout */
 @media (max-width: 600px) {
     body {
-        padding: 20px 14px;
+        padding: 20px 12px;
     }
 
     .site-header h1 {
@@ -231,31 +334,31 @@ button:focus-visible {
     .analyzer-card,
     .results-card {
         padding: 20px;
+        border-radius: 14px;
     }
 
-    button {
+    .score-card {
+        padding: 18px 14px;
+    }
+
+    .score-number {
+        font-size: 38px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .form-actions button {
         width: 100%;
     }
 }
 
-.form-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    align-items: center;
-}
-
-.form-actions button {
-    margin-top: 18px;
-}
-
-.clear-button {
-    background: #e2e8f0;
-    color: #334155;
-    box-shadow: none;
-}
-
-.clear-button:hover {
-    background: #cbd5e1;
-    box-shadow: none;
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        transition: none !important;
+    }
 }

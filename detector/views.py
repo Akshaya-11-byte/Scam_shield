@@ -1,4 +1,99 @@
 from django.shortcuts import render
+from urllib.parse import urlparse
+import re
+
+
+def analyze_urls(message):
+    """Find URLs and check for basic suspicious patterns."""
+    warnings = []
+    recommendations = []
+
+    url_pattern = r"""(?:https?://|www\.)[^\s<>"']+"""
+    urls = re.findall(url_pattern, message, re.IGNORECASE)
+
+    shorteners = {
+        "bit.ly",
+        "tinyurl.com",
+        "t.co",
+        "is.gd",
+        "cutt.ly",
+        "rb.gy",
+        "shorturl.at",
+    }
+
+    suspicious_words = [
+        "verify",
+        "login",
+        "claim-prize",
+        "free-gift",
+        "account-suspended",
+        "update-kyc",
+        "urgent-payment",
+    ]
+
+    for raw_url in urls:
+        # Remove common punctuation at the end of a URL in a sentence.
+        url = raw_url.rstrip(".,!?;:)]}")
+        normalized_url = url.lower()
+
+        # Parse the URL without visiting it.
+        parsed = urlparse(
+            url if "://" in url else "https://" + url
+        )
+        hostname = (parsed.hostname or "").lower()
+
+        if not hostname:
+            continue
+
+        # Warn about unencrypted HTTP links.
+        if normalized_url.startswith("http://"):
+            warnings.append(
+                "A link uses HTTP instead of HTTPS. "
+                "The connection may not be encrypted."
+            )
+            recommendations.append(
+                "Avoid entering personal or payment information on "
+                "HTTP pages. Check the website independently."
+            )
+
+        # Warn about commonly used URL-shortening services.
+        if hostname in shorteners:
+            warnings.append(
+                "A shortened URL hides the destination website."
+            )
+            recommendations.append(
+                "Verify the final destination through a trusted source "
+                "before opening a shortened link."
+            )
+
+        # Warn about suspicious words in the URL.
+        if any(word in normalized_url for word in suspicious_words):
+            warnings.append(
+                "The URL contains words commonly used in "
+                "account-verification or prize-related lures."
+            )
+            recommendations.append(
+                "Do not enter passwords, OTPs, or banking details "
+                "through an unexpected link. Visit the official "
+                "website directly."
+            )
+
+        # Warn about usernames embedded before the hostname.
+        if parsed.username or parsed.password:
+            warnings.append(
+                "The URL contains a username or password before "
+                "the website hostname, which can be misleading."
+            )
+            recommendations.append(
+                "Do not trust a link based only on its appearance. "
+                "Check the actual hostname carefully."
+            )
+
+    # Remove duplicate URL warnings and recommendations.
+    return (
+        list(dict.fromkeys(warnings)),
+        list(dict.fromkeys(recommendations)),
+    )
 
 
 def home(request):
@@ -53,7 +148,8 @@ def home(request):
             or "account will be blocked" in text
         ):
             warnings.append(
-                "Urgent payment or account-threat messages can be pressure tactics."
+                "Urgent payment or account-threat messages "
+                "can be pressure tactics."
             )
             recommendations.append(
                 "Do not rush into payment. Contact the organization "
@@ -68,11 +164,12 @@ def home(request):
             or "password" in text
         ):
             warnings.append(
-                "The message mentions sensitive financial or login information."
+                "The message mentions sensitive financial "
+                "or login information."
             )
             recommendations.append(
-                "Do not share passwords, CVV numbers, or banking details "
-                "through an unverified message."
+                "Do not share passwords, CVV numbers, or banking "
+                "details through an unverified message."
             )
 
         # 6. Suspicious link language
@@ -86,8 +183,8 @@ def home(request):
                 "should be checked carefully."
             )
             recommendations.append(
-                "Avoid opening unexpected links. Visit the official website "
-                "directly instead."
+                "Avoid opening unexpected links. Visit the official "
+                "website directly instead."
             )
 
         # 7. Suspicious job offers
@@ -118,8 +215,9 @@ def home(request):
                 "may be phishing attempts."
             )
             recommendations.append(
-                "Check account alerts directly in the official app or website. "
-                "Do not use verification links from unexpected messages."
+                "Check account alerts directly in the official app "
+                "or website. Do not use verification links from "
+                "unexpected messages."
             )
 
         # 9. Suspicious app installation
@@ -136,10 +234,15 @@ def home(request):
                 "Use official app stores or the developer's verified website."
             )
 
-        # 10. Calculate an illustrative risk score
+        # 10. Analyze URLs without opening them
+        url_warnings, url_recommendations = analyze_urls(message)
+        warnings.extend(url_warnings)
+        recommendations.extend(url_recommendations)
+
+        # 11. Calculate illustrative risk score
         risk_score = min(len(warnings) * 25, 100)
 
-        # 11. Determine risk level
+        # 12. Determine risk level
         if risk_score == 0:
             risk_level = "Low"
         elif risk_score <= 25:
@@ -147,7 +250,7 @@ def home(request):
         else:
             risk_level = "High"
 
-        # 12. General advice when no rules match
+        # 13. General advice when no rules match
         if not warnings:
             recommendations.append(
                 "No warning signs matched the current rules. "
@@ -155,10 +258,21 @@ def home(request):
                 "Verify unexpected requests independently."
             )
 
-        # 13. Remove duplicate recommendations
+        # 14. Remove duplicate recommendations
+        warnings = list(dict.fromkeys(warnings))
         recommendations = list(dict.fromkeys(recommendations))
 
-    # 14. Send results to the HTML page
+        # Recalculate the score after removing duplicate warnings
+        risk_score = min(len(warnings) * 25, 100)
+
+        if risk_score == 0:
+            risk_level = "Low"
+        elif risk_score <= 25:
+            risk_level = "Medium"
+        else:
+            risk_level = "High"
+
+    # 15. Send results to the HTML page
     return render(
         request,
         "detector/home.html",
